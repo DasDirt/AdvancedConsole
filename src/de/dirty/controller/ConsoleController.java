@@ -1,5 +1,6 @@
 package de.dirty.controller;
 
+import de.dirty.command.Command;
 import de.dirty.command.CommandManager;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -41,7 +42,9 @@ public class ConsoleController implements Initializable {
         MouseEvent.MOUSE_CLICKED,
         event -> {
           if (event.getButton().equals(MouseButton.SECONDARY)) {
-            setClipboardString(textArea.getSelectedText());
+            if (!textArea.getSelectedText().equals("")) {
+              setClipboardString(textArea.getSelectedText());
+            }
           }
         });
 
@@ -61,10 +64,17 @@ public class ConsoleController implements Initializable {
                 lastInputs.add(textField.getText());
                 Collections.reverse(lastInputs);
               }
-              String tmpText =textField.getText();
-              textArea.appendText("\nExecute command: " + textField.getText() + "\n");
+              String tmpText = textField.getText();
+              Command command =
+                  CommandManager.INSTANCE.getCommand(textField.getText().split(" ")[0]);
+
+              textArea.appendText(
+                  "\nExecute command: "
+                      + textField.getText()
+                      + (command != null ? " [" + command.getCommand() + "]" : "")
+                      + "\n");
               textArea.appendText(CommandManager.INSTANCE.handleInput(textField.getText()) + "\n");
-              if(textField.getText().equals(tmpText)) {
+              if (textField.getText().equals(tmpText)) {
                 textField.setText("");
               }
             }

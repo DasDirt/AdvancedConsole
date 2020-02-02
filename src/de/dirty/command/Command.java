@@ -1,5 +1,6 @@
 package de.dirty.command;
 
+import de.dirty.controller.ConsoleController;
 import java.util.Arrays;
 
 public abstract class Command {
@@ -30,7 +31,7 @@ public abstract class Command {
   public abstract String onExecute(String[] args);
 
   public void setResult(String result){
-
+    ConsoleController.getConsoleController().setLastResult(result);
   }
 
   public String getCommand() {

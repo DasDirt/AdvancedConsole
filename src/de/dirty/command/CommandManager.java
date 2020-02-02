@@ -1,5 +1,6 @@
 package de.dirty.command;
 
+import de.dirty.command.commands.Base64Command;
 import de.dirty.command.commands.CopyCommand;
 import de.dirty.command.commands.HelpCommand;
 import de.dirty.command.commands.SuperscriptCommand;
@@ -16,6 +17,18 @@ public class CommandManager {
     commands.add(new HelpCommand());
     commands.add(new SuperscriptCommand());
     commands.add(new CopyCommand());
+    commands.add(new Base64Command());
+  }
+
+  /** This method returns a command by name or alias */
+  public Command getCommand(String s) {
+    for (Command command : commands) {
+      if (command.getCommand().equalsIgnoreCase(s)
+          || Arrays.asList(command.getAlias()).contains(s)) {
+        return command;
+      }
+    }
+    return null;
   }
 
   /**
@@ -27,13 +40,12 @@ public class CommandManager {
   public String handleInput(String input) {
     String[] tmpArgs = input.split(" ");
     if (tmpArgs.length > 0) {
-      for (Command command : commands) {
-        if (command.getCommand().equalsIgnoreCase(tmpArgs[0])
-            || Arrays.asList(command.getAlias()).contains(tmpArgs[0])) {
-          return command.onExecute(Arrays.copyOfRange(tmpArgs, 1, tmpArgs.length));
-        }
+      Command command = getCommand(tmpArgs[0]);
+      if (command != null) {
+        return command.onExecute(Arrays.copyOfRange(tmpArgs, 1, tmpArgs.length));
+      } else {
+        return "'" + tmpArgs[0] + "' is not recognized as a command\nType 'help' for help.";
       }
-      return "'" + tmpArgs[0] + "' is not recognized as a command\nType 'help' for help.";
     }
     // This should never returned only if the input is empty.
     return null;

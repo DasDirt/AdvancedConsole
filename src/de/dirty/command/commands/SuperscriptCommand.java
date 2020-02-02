@@ -101,7 +101,7 @@ public class SuperscriptCommand extends Command {
         result.append(aChar);
       }
     }
-    ConsoleController.getConsoleController().setLastResult(result.toString());
+    setResult(result.toString());
     return stringBuilder.toString() + "'";
   }
 }
