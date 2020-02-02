@@ -45,11 +45,6 @@ public class ConsoleController implements Initializable {
             setClipboardString(textArea.getSelectedText());
           }
         });
-    textArea.setOnKeyPressed(
-        keyEvent -> {
-          textField.appendText(keyEvent.getText());
-          textField.requestFocus();
-        });
 
     textField.setOnMouseClicked(
         mouseEvent -> {
@@ -72,7 +67,6 @@ public class ConsoleController implements Initializable {
               textField.setText("");
             }
           } else if (event.getCode().equals(KeyCode.UP)) {
-            System.out.println(currentLast);
             if (currentLast < lastInputs.size()) {
               currentLast++;
             }
@@ -81,7 +75,6 @@ public class ConsoleController implements Initializable {
               currentLast = lastInputs.size() - 1;
             }
           } else if (event.getCode().equals(KeyCode.DOWN)) {
-            System.out.println(currentLast);
             if (currentLast > 0) {
               currentLast--;
               textField.setText(lastInputs.get(currentLast));
@@ -106,6 +99,13 @@ public class ConsoleController implements Initializable {
   public void setInfoText(String s) {
     infoText = true;
     textField.setText(s);
+  }
+
+  public void focusTextField(String pressed) {
+    if (!textField.isFocused()) {
+      textField.appendText(pressed);
+      textField.requestFocus();
+    }
   }
 
   /** Returns the instance of the console controller. */
