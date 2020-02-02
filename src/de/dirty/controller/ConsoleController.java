@@ -39,9 +39,7 @@ public class ConsoleController implements Initializable {
     textArea.addEventFilter(
         MouseEvent.MOUSE_CLICKED,
         event -> {
-          if (event.getButton().equals(MouseButton.PRIMARY)) {
-            textField.requestFocus();
-          } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+          if (event.getButton().equals(MouseButton.SECONDARY)) {
             setClipboardString(textArea.getSelectedText());
           }
         });
@@ -103,7 +101,9 @@ public class ConsoleController implements Initializable {
 
   public void focusTextField(String pressed) {
     if (!textField.isFocused()) {
-      textField.appendText(pressed);
+      if (pressed != null) {
+        textField.appendText(pressed);
+      }
       textField.requestFocus();
     }
   }
