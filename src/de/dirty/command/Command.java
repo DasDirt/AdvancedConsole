@@ -1,4 +1,4 @@
-package de.dirty.commands;
+package de.dirty.command;
 
 import java.util.Arrays;
 

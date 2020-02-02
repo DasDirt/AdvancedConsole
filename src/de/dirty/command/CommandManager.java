@@ -1,5 +1,7 @@
-package de.dirty.commands;
+package de.dirty.command;
 
+import de.dirty.command.commands.HelpCommand;
+import de.dirty.command.commands.SuperscriptCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +11,10 @@ public class CommandManager {
   private List<Command> commands = new ArrayList<>();
 
   /** All commands should be registered here. */
-  public CommandManager() {}
+  public CommandManager() {
+    commands.add(new HelpCommand());
+    commands.add(new SuperscriptCommand());
+  }
 
   /**
    * This method handles the console input and returns the output.
@@ -30,5 +35,9 @@ public class CommandManager {
     }
     // This should never returned only if the input is empty.
     return null;
+  }
+
+  public List<Command> getCommands() {
+    return commands;
   }
 }

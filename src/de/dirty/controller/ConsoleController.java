@@ -1,18 +1,25 @@
 package de.dirty.controller;
 
-import de.dirty.commands.CommandManager;
+import de.dirty.command.CommandManager;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class ConsoleController implements Initializable {
 
   public static ConsoleController consoleController;
+  private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
   @FXML private TextArea textArea;
 
@@ -22,18 +29,39 @@ public class ConsoleController implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
     consoleController = this;
     textArea.setText("Advanced Console [Version 1.0]\n(c) 2020 DasDirt. All rights reserved.\n");
-    textArea.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> textField.requestFocus());
+    textArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
+    textArea.addEventFilter(
+        MouseEvent.MOUSE_CLICKED,
+        event -> {
+          if (event.getButton().equals(MouseButton.PRIMARY)) {
+            textField.requestFocus();
+          } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+            setClipboardString(textArea.getSelectedText());
+          }
+        });
+    textArea.setOnKeyPressed(
+        keyEvent -> {
+          textField.appendText(keyEvent.getText());
+          textField.requestFocus();
+        });
 
     textField.setOnKeyPressed(
         event -> {
           if (event.getCode().equals(KeyCode.ENTER)) {
             if (textField.getText().length() > 0) {
-              textArea.appendText(
-                  "\n" + CommandManager.INSTANCE.handleInput(textField.getText()) + "\n");
+              textArea.appendText("\nExecute command: " + textField.getText() + "\n");
+              textArea.appendText(CommandManager.INSTANCE.handleInput(textField.getText()) + "\n");
               textField.setText("");
             }
           }
         });
+  }
+
+  /** This method sets a text in the clipboard */
+  public void setClipboardString(String s) {
+    StringSelection stringSelection = new StringSelection(s);
+    clipboard.setContents(stringSelection, stringSelection);
+    textArea.appendText("\nCopied text: '" + s + "' into your clipboard\n");
   }
 
   /** Returns the instance of the console controller. */
