@@ -24,6 +24,7 @@ public class ConsoleController implements Initializable {
   public static ConsoleController consoleController;
   private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
   private List<String> lastInputs = new ArrayList<>();
+  private String lastResult = "";
   private boolean infoText = false;
   private int currentLast = 0;
 
@@ -60,9 +61,12 @@ public class ConsoleController implements Initializable {
                 lastInputs.add(textField.getText());
                 Collections.reverse(lastInputs);
               }
+              String tmpText =textField.getText();
               textArea.appendText("\nExecute command: " + textField.getText() + "\n");
               textArea.appendText(CommandManager.INSTANCE.handleInput(textField.getText()) + "\n");
-              textField.setText("");
+              if(textField.getText().equals(tmpText)) {
+                textField.setText("");
+              }
             }
           } else if (event.getCode().equals(KeyCode.UP)) {
             if (currentLast < lastInputs.size()) {
@@ -90,7 +94,6 @@ public class ConsoleController implements Initializable {
   public void setClipboardString(String s) {
     StringSelection stringSelection = new StringSelection(s);
     clipboard.setContents(stringSelection, stringSelection);
-    //    textArea.appendText("\nCopied text: '" + s + "' into your clipboard\n");
     setInfoText("Copied text: '" + s + "' into your clipboard");
   }
 
@@ -111,5 +114,15 @@ public class ConsoleController implements Initializable {
   /** Returns the instance of the console controller. */
   public static ConsoleController getConsoleController() {
     return consoleController;
+  }
+
+  /** Gets the last result */
+  public String getLastResult() {
+    return lastResult;
+  }
+
+  /** Sets the last result */
+  public void setLastResult(String lastResult) {
+    this.lastResult = lastResult;
   }
 }

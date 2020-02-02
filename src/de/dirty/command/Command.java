@@ -29,6 +29,10 @@ public abstract class Command {
    */
   public abstract String onExecute(String[] args);
 
+  public void setResult(String result){
+
+  }
+
   public String getCommand() {
     return command;
   }

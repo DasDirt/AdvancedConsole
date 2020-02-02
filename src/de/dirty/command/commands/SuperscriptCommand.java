@@ -1,6 +1,7 @@
 package de.dirty.command.commands;
 
 import de.dirty.command.Command;
+import de.dirty.controller.ConsoleController;
 import java.util.HashMap;
 
 public class SuperscriptCommand extends Command {
@@ -88,15 +89,19 @@ public class SuperscriptCommand extends Command {
 
   @Override
   public String onExecute(String[] args) {
+    StringBuilder result = new StringBuilder();
     StringBuilder stringBuilder = new StringBuilder("Sure '" + args[0] + "' in superscript is: '");
     char[] chars = args[0].toCharArray();
     for (char aChar : chars) {
       if (superscriptHashMap.containsKey(aChar)) {
         stringBuilder.append(superscriptHashMap.get(aChar));
+        result.append(superscriptHashMap.get(aChar));
       } else {
         stringBuilder.append(aChar);
+        result.append(aChar);
       }
     }
+    ConsoleController.getConsoleController().setLastResult(result.toString());
     return stringBuilder.toString() + "'";
   }
 }

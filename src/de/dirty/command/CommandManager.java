@@ -1,5 +1,6 @@
 package de.dirty.command;
 
+import de.dirty.command.commands.CopyCommand;
 import de.dirty.command.commands.HelpCommand;
 import de.dirty.command.commands.SuperscriptCommand;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class CommandManager {
   public CommandManager() {
     commands.add(new HelpCommand());
     commands.add(new SuperscriptCommand());
+    commands.add(new CopyCommand());
   }
 
   /**
