@@ -5,6 +5,9 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -20,6 +23,9 @@ public class ConsoleController implements Initializable {
 
   public static ConsoleController consoleController;
   private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  private List<String> lastInputs = new ArrayList<>();
+  private boolean infoText = false;
+  private int currentLast = 0;
 
   @FXML private TextArea textArea;
 
@@ -45,14 +51,46 @@ public class ConsoleController implements Initializable {
           textField.requestFocus();
         });
 
+    textField.setOnMouseClicked(
+        mouseEvent -> {
+          if (infoText) {
+            textField.setText("");
+          }
+        });
     textField.setOnKeyPressed(
         event -> {
           if (event.getCode().equals(KeyCode.ENTER)) {
+            currentLast = 0;
             if (textField.getText().length() > 0) {
+              if (!lastInputs.contains(textField.getText())) {
+                Collections.reverse(lastInputs);
+                lastInputs.add(textField.getText());
+                Collections.reverse(lastInputs);
+              }
               textArea.appendText("\nExecute command: " + textField.getText() + "\n");
               textArea.appendText(CommandManager.INSTANCE.handleInput(textField.getText()) + "\n");
               textField.setText("");
             }
+          } else if (event.getCode().equals(KeyCode.UP)) {
+            System.out.println(currentLast);
+            if (currentLast < lastInputs.size()) {
+              currentLast++;
+            }
+            textField.setText(lastInputs.get(currentLast - 1));
+            if (currentLast == lastInputs.size()) {
+              currentLast = lastInputs.size() - 1;
+            }
+          } else if (event.getCode().equals(KeyCode.DOWN)) {
+            System.out.println(currentLast);
+            if (currentLast > 0) {
+              currentLast--;
+              textField.setText(lastInputs.get(currentLast));
+            } else {
+              textField.setText("");
+            }
+          } else if (infoText) {
+            infoText = false;
+            textField.setText("");
           }
         });
   }
@@ -61,7 +99,13 @@ public class ConsoleController implements Initializable {
   public void setClipboardString(String s) {
     StringSelection stringSelection = new StringSelection(s);
     clipboard.setContents(stringSelection, stringSelection);
-    textArea.appendText("\nCopied text: '" + s + "' into your clipboard\n");
+    //    textArea.appendText("\nCopied text: '" + s + "' into your clipboard\n");
+    setInfoText("Copied text: '" + s + "' into your clipboard");
+  }
+
+  public void setInfoText(String s) {
+    infoText = true;
+    textField.setText(s);
   }
 
   /** Returns the instance of the console controller. */
