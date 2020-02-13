@@ -2,7 +2,9 @@ package de.dirty.command;
 
 import de.dirty.command.commands.Base64Command;
 import de.dirty.command.commands.CopyCommand;
+import de.dirty.command.commands.ExitCommand;
 import de.dirty.command.commands.HelpCommand;
+import de.dirty.command.commands.MoveCommand;
 import de.dirty.command.commands.SuperscriptCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,9 +17,11 @@ public class CommandManager {
   /** All commands should be registered here. */
   public CommandManager() {
     commands.add(new HelpCommand());
+    commands.add(new ExitCommand());
+    commands.add(new Base64Command());
     commands.add(new SuperscriptCommand());
     commands.add(new CopyCommand());
-    commands.add(new Base64Command());
+    commands.add(new MoveCommand());
   }
 
   /** This method returns a command by name or alias */

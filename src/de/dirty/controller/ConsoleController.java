@@ -29,9 +29,11 @@ public class ConsoleController implements Initializable {
   private boolean infoText = false;
   private int currentLast = 0;
 
-  @FXML private TextArea textArea;
+  @FXML
+  private TextArea textArea;
 
-  @FXML private TextField textField;
+  @FXML
+  private TextField textField;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -39,68 +41,70 @@ public class ConsoleController implements Initializable {
     textArea.setText("Advanced Console [Version 1.0]\n(c) 2020 DasDirt. All rights reserved.\n");
     textArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
     textArea.addEventFilter(
-        MouseEvent.MOUSE_CLICKED,
-        event -> {
-          if (event.getButton().equals(MouseButton.SECONDARY)) {
-            if (!textArea.getSelectedText().equals("")) {
-              setClipboardString(textArea.getSelectedText());
-            }
+      MouseEvent.MOUSE_CLICKED,
+      event -> {
+        if (event.getButton().equals(MouseButton.SECONDARY)) {
+          if (!textArea.getSelectedText().equals("")) {
+            setClipboardString(textArea.getSelectedText());
           }
-        });
+        }
+      });
 
     textField.setOnMouseClicked(
-        mouseEvent -> {
-          if (infoText) {
-            textField.setText("");
-          }
-        });
+      mouseEvent -> {
+        if (infoText) {
+          textField.setText("");
+        }
+      });
     textField.setOnKeyPressed(
-        event -> {
-          if (event.getCode().equals(KeyCode.ENTER)) {
-            currentLast = 0;
-            if (textField.getText().length() > 0) {
-              if (!lastInputs.contains(textField.getText())) {
-                Collections.reverse(lastInputs);
-                lastInputs.add(textField.getText());
-                Collections.reverse(lastInputs);
-              }
-              String tmpText = textField.getText();
-              Command command =
-                  CommandManager.INSTANCE.getCommand(textField.getText().split(" ")[0]);
+      event -> {
+        if (event.getCode().equals(KeyCode.ENTER)) {
+          currentLast = 0;
+          if (textField.getText().length() > 0) {
+            if (!lastInputs.contains(textField.getText())) {
+              Collections.reverse(lastInputs);
+              lastInputs.add(textField.getText());
+              Collections.reverse(lastInputs);
+            }
+            String tmpText = textField.getText();
+            Command command =
+              CommandManager.INSTANCE.getCommand(textField.getText().split(" ")[0]);
 
-              textArea.appendText(
-                  "\nExecute command: "
-                      + textField.getText()
-                      + (command != null ? " [" + command.getCommand() + "]" : "")
-                      + "\n");
-              textArea.appendText(CommandManager.INSTANCE.handleInput(textField.getText()) + "\n");
-              if (textField.getText().equals(tmpText)) {
-                textField.setText("");
-              }
-            }
-          } else if (event.getCode().equals(KeyCode.UP)) {
-            if (currentLast < lastInputs.size()) {
-              currentLast++;
-            }
-            textField.setText(lastInputs.get(currentLast - 1));
-            if (currentLast == lastInputs.size()) {
-              currentLast = lastInputs.size() - 1;
-            }
-          } else if (event.getCode().equals(KeyCode.DOWN)) {
-            if (currentLast > 0) {
-              currentLast--;
-              textField.setText(lastInputs.get(currentLast));
-            } else {
+            textArea.appendText(
+              "\nExecute command: "
+                + textField.getText()
+                + (command != null ? " [" + command.getCommand() + "]" : "")
+                + "\n");
+            textArea.appendText(CommandManager.INSTANCE.handleInput(textField.getText()) + "\n");
+            if (textField.getText().equals(tmpText)) {
               textField.setText("");
             }
-          } else if (infoText) {
-            infoText = false;
+          }
+        } else if (event.getCode().equals(KeyCode.UP)) {
+          if (currentLast < lastInputs.size()) {
+            currentLast++;
+          }
+          textField.setText(lastInputs.get(currentLast - 1));
+          if (currentLast == lastInputs.size()) {
+            currentLast = lastInputs.size() - 1;
+          }
+        } else if (event.getCode().equals(KeyCode.DOWN)) {
+          if (currentLast > 0) {
+            currentLast--;
+            textField.setText(lastInputs.get(currentLast));
+          } else {
             textField.setText("");
           }
-        });
+        } else if (infoText) {
+          infoText = false;
+          textField.setText("");
+        }
+      });
   }
 
-  /** This method sets a text in the clipboard */
+  /**
+   * This method sets a text in the clipboard
+   */
   public void setClipboardString(String s) {
     StringSelection stringSelection = new StringSelection(s);
     clipboard.setContents(stringSelection, stringSelection);
@@ -121,17 +125,23 @@ public class ConsoleController implements Initializable {
     }
   }
 
-  /** Returns the instance of the console controller. */
+  /**
+   * Returns the instance of the console controller.
+   */
   public static ConsoleController getConsoleController() {
     return consoleController;
   }
 
-  /** Gets the last result */
+  /**
+   * Gets the last result
+   */
   public String getLastResult() {
     return lastResult;
   }
 
-  /** Sets the last result */
+  /**
+   * Sets the last result
+   */
   public void setLastResult(String lastResult) {
     this.lastResult = lastResult;
   }

@@ -6,7 +6,7 @@ import java.util.Base64;
 public class Base64Command extends Command {
 
   public Base64Command() {
-    super("base64", "base64 <encode/decode> <text>", "En/De-codes a string", null);
+    super("base64", "base64 <encode/decode> <text>", "En/De-codes a string", new String[]{});
   }
 
   @Override
